@@ -10,7 +10,7 @@ This is a training sample I originally created for a [Terraform][tf] on [Azure][
 * [x] Add availability set
 * [x] Update Ubuntu to 18.04
 * [x] Add boot diagnostics
-* [x] Break out VM into
+* [x] Break out VM into `linux` module
 * [x] Cleanup and namespacing
 * [x] Single Ubuntu VM with managed disks
 

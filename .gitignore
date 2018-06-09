@@ -2,4 +2,5 @@
 .python-version
 .vscode
 .terraform
+.terraform.tfstate.lock.info
 terraform.tfstate*

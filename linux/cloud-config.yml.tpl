@@ -35,7 +35,7 @@ write_files:
       AcceptEnv LANG LC_*
       Subsystem sftp /usr/
       UsePAM yes
-  - path: /etc/fail2ban/jail.d/local-custom-ssh-port.conf
+  - path: /etc/fail2ban/jail.d/override-ssh-port.conf
     permissions: 0644
     content: |
       [sshd]

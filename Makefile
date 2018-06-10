@@ -8,6 +8,7 @@ endif
 
 export TF_VAR_shared_prefix := "paas"
 export TF_VAR_instance_prefix := "ubuntu"
+export TF_VAR_ssh_port := "2211"
 
 .PHONY: plan apply destroy validate
 

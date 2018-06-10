@@ -36,21 +36,24 @@ write_files:
       Subsystem sftp /usr/
       UsePAM yes
 
-apt:
-  sources:
-    docker_ce.list:
-      source: "deb https://download.docker.com/linux/ubuntu $RELEASE stable"
-      keyserver: p80.pool.sks-keyservers.net
-      keyid: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
+# The Docker official repository does not ship 18.04/bionic packages at this time
+#apt:
+#  sources:
+#    docker_ce.list:
+#      source: "deb https://download.docker.com/linux/ubuntu $RELEASE stable"
+#      keyserver: p80.pool.sks-keyservers.net
+#      keyid: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
 
 packages:
-  - docker-ce
+  - docker.io
+  - docker-compose
   - vim
   - curl
   - fail2ban
   - htop
   - wget
   - auditd
+  - audispd-plugins
 
 package_update: true
 package_upgrade: true
@@ -67,4 +70,4 @@ runcmd:
   - DEBIAN_FRONTEND=noninteractive apt-get autoremove -y
   - reboot
 
-  # TODO: swap using waafent.conf
+  # TODO: swap using waagent.conf

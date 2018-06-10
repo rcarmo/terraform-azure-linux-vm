@@ -2,12 +2,16 @@
 
 This is a training sample I originally created for a [Terraform][tf] on [Azure][az] workshop, which I am cleaning up for public consumption and as an end-to-end, full-stack provisioning demo that can be used as a starting point for more complex solutions.
 
+([Blog post](http://taoofmac.com/space/blog/2018/06/10/2300 with more info))
+
 ## Roadmap
 
 This is the list of currently implemented/planned features:
 
 * [ ] Set up a full web stack
 * [ ] Set locale in `cloud-config`
+* [ ] Metrics agent 2.3/3.0 selection through conditionals
+* [ ] Improve comments
 * [ ] Move NSG outside the `linux` module for flexibility
 * [ ] Move `cloud-config` template outside the `linux` module and into its own folder
 * [x] Set up `docker` and other core packages via `cloud-init`

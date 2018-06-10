@@ -2,7 +2,7 @@
 
 This is a training sample I originally created for a [Terraform][tf] on [Azure][az] workshop, which I am cleaning up for public consumption and as an end-to-end, full-stack provisioning demo that can be used as a starting point for more complex solutions.
 
-# TODO:
+## Roadmap
 
 This is the list of currently implemented/planned features:
 

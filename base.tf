@@ -110,6 +110,7 @@ module "linux" {
   resource_group_name = "${azurerm_resource_group.rg.name}"
   admin_username      = "${var.admin_username}"
   ssh_key             = "${var.ssh_key}"
+  ssh_port            = "${var.ssh_port}"
 
   // this is something that annoys me - passing the resource would be nicer
   diag_storage_name                  = "${azurerm_storage_account.diagnostics.name}"

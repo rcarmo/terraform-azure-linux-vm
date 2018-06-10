@@ -36,3 +36,7 @@ variable "tags" {
 }
 
 variable "ssh_key" {}
+
+variable "ssh_port" {
+  default = "22"
+}

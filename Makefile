@@ -6,7 +6,8 @@ ifneq (,$(wildcard $(SSH_KEY)))
 	#export TF_LOG=TRACE
 endif
 
-export TF_VAR_prefix := "paas"
+export TF_VAR_shared_prefix := "paas"
+export TF_VAR_instance_prefix := "ubuntu"
 
 .PHONY: plan apply destroy validate
 

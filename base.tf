@@ -12,8 +12,12 @@ variable "admin_username" {
   default = "azureuser"
 }
 
-variable "prefix" {
+variable "instance_prefix" {
   default = "paas"
+}
+
+variable "shared_prefix" {
+  default = "demo"
 }
 
 variable "ssh_port" {
@@ -33,15 +37,15 @@ variable "storage_type" {
 }
 
 locals {
-  resource_group_name = "${var.prefix}-rg"
+  resource_group_name = "${var.shared_prefix}"
 
   tags = {
     environment = "production"
     serviceType = "compute"
-    solution    = "${var.prefix}"
+    solution    = "${var.instance_prefix}"
   }
 
-  vnet_name             = "${var.prefix}-vnet"
+  vnet_name             = "${var.shared_prefix}"
   vnet_address_space    = "10.0.0.0/16"
   subnet_name           = "default"
   subnet_address_prefix = "10.0.0.0/24"
@@ -81,7 +85,7 @@ resource "random_id" "pseudo" {
 }
 
 resource "azurerm_storage_account" "diagnostics" {
-  name                     = "${var.prefix}diag${random_id.pseudo.hex}"
+  name                     = "${var.shared_prefix}diag${random_id.pseudo.hex}"
   location                 = "${azurerm_resource_group.rg.location}"
   resource_group_name      = "${azurerm_resource_group.rg.name}"
   account_replication_type = "LRS"
@@ -90,7 +94,7 @@ resource "azurerm_storage_account" "diagnostics" {
 }
 
 resource "azurerm_availability_set" "machines" {
-  name                = "${var.prefix}"
+  name                = "${var.shared_prefix}"
   location            = "${azurerm_resource_group.rg.location}"
   resource_group_name = "${azurerm_resource_group.rg.name}"
   managed             = true
@@ -100,7 +104,7 @@ resource "azurerm_availability_set" "machines" {
 module "linux" {
   source = "./linux"
 
-  name                = "${var.prefix}"
+  name                = "${var.instance_prefix}"
   vm_size             = "${var.standard_vm_size}"
   location            = "${var.location}"
   resource_group_name = "${azurerm_resource_group.rg.name}"

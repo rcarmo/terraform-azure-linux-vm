@@ -55,7 +55,7 @@ locals {
 resource "azurerm_resource_group" "rg" {
   name     = "${local.resource_group_name}"
   location = "${var.location}"
-  tags     = "${merge(local.tags, map("ProvisionedVia", "Terraform"))}"
+  tags     = "${merge(local.tags, map("provisionedBy", "terraform"))}"
 }
 
 # Networking

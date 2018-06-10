@@ -7,6 +7,9 @@ This is a training sample I originally created for a [Terraform][tf] on [Azure][
 This is the list of currently implemented/planned features:
 
 * [ ] Set up a full web stack
+* [ ] Set locale in `cloud-config`
+* [ ] Move NSG outside the `linux` module for flexibility
+* [ ] Move `cloud-config` template outside the `linux` module and into its own folder
 * [x] Set up `docker` and other core packages via `cloud-init`
 * [x] Re-instate public IP, DNS alias and NSGs in `main.tf`
 * [x] Set SSH port and harden configuration via `cloud-init`

@@ -35,6 +35,14 @@ write_files:
       AcceptEnv LANG LC_*
       Subsystem sftp /usr/
       UsePAM yes
+  - path: /etc/fail2ban/jail.d/local-custom-ssh-port.conf
+    permissions: 0644
+    content: |
+      [sshd]
+      enabled = true
+      port    = ${ssh_port}
+      logpath = %(sshd_log)s
+      backend = %(sshd_backend)s
 
 # The Docker official repository does not ship 18.04/bionic packages at this time
 #apt:

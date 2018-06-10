@@ -36,9 +36,9 @@ locals {
   resource_group_name = "${var.prefix}-rg"
 
   tags = {
-    Environment = "production"
-    ServiceType = "Compute"
-    Solution    = "piku"
+    environment = "production"
+    serviceType = "compute"
+    solution    = "${var.prefix}"
   }
 
   vnet_name             = "${var.prefix}-vnet"

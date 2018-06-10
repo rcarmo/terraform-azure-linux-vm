@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <WadCfg>
   <DiagnosticMonitorConfiguration overallQuotaInMB="4096">
     <DiagnosticInfrastructureLogs scheduledTransferPeriod="PT1M" scheduledTransferLogLevelFilter="Warning"/>

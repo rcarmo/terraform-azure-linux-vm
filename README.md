@@ -8,6 +8,7 @@ This is a training sample I originally created for a [Terraform][tf] on [Azure][
 
 This is the list of currently implemented/planned features:
 
+* [ ] Let's Encrypt support
 * [ ] Set up a full web stack
 * [ ] Set locale in `cloud-config`
 * [ ] Metrics agent 2.3/3.0 selection through conditionals

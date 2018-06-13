@@ -1,9 +1,10 @@
 #cloud-config
 
 write_files:
+  # Basic configuration
   - path: /etc/ssh/sshd_config
     permissions: 0644
-    # strenghten SSH cyphers
+    # strengthen SSH cyphers
     content: |
       Port ${ssh_port}
       Protocol 2
@@ -43,6 +44,47 @@ write_files:
       port    = ${ssh_port}
       logpath = %(sshd_log)s
       backend = %(sshd_backend)s
+  # Development Stack
+  - path: /etc/nginx/sites-available/default
+    permissions: 0644
+    content: |
+      server {
+        listen 80 default_server;
+        listen [::]:80 default_server;
+        root /var/www/html;
+        index index.html index.htm;
+        server_name _;
+        location / {
+          # First attempt to serve request as file, then
+          # as directory, then fall back to displaying a 404.
+          try_files $uri $uri/ =404;
+        }
+      }
+      include /home/${paas_username}/.piku/nginx/*.conf;
+  - path: /etc/incron.d/paas
+    permissions: 0644
+    content: |
+      /home/${paas_username}/.piku/nginx IN_MODIFY,IN_NO_LOOP /bin/systemctl reload nginx
+  - path: /etc/systemd/system/uwsgi.service
+    permissions: 8644
+    content: |
+      [Unit]
+      Description=uWSGI Emperor
+      After=syslog.target
+
+      [Service]
+      ExecStart=/usr/bin/uwsgi --ini /home/${paas_username}/.piku/uwsgi/uwsgi.ini
+      User=${paas_username}
+      Group=www-data
+      RuntimeDirectory=uwsgi
+      Restart=always
+      KillSignal=SIGQUIT
+      Type=notify
+      StandardError=syslog
+      NotifyAccess=all
+
+      [Install]
+      WantedBy=multi-user.target
 
 # The Docker official repository does not ship 18.04/bionic packages at this time
 #apt:
@@ -53,15 +95,40 @@ write_files:
 #      keyid: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
 
 packages:
-  - docker.io
-  - docker-compose
-  - vim
+  - audispd-plugins
+  - auditd
   - curl
+  - docker-compose
+  - docker.io
   - fail2ban
   - htop
+  - language-pack-en-base
+  - tmux
+  - vim
   - wget
-  - auditd
-  - audispd-plugins
+  # dev stack
+  - build-essential
+  - certbot
+  - git
+  - incron
+  - libjpeg-dev
+  - libxml2-dev
+  - libxslt1-dev
+  - nginx
+  - python-certbot-nginx
+  - python-dev
+  - python-pip  
+  - python-virtualenv 
+  - python3-dev
+  - python3-pip  
+  - python3-virtualenv 
+  - uwsgi 
+  - uwsgi-plugin-asyncio-python3
+  - uwsgi-plugin-gevent-python
+  - uwsgi-plugin-python
+  - uwsgi-plugin-python3
+  - uwsgi-plugin-tornado-python
+  - zlib1g-dev
 
 package_update: true
 package_upgrade: true
@@ -72,7 +139,9 @@ timezone: Europe/Lisbon
 runcmd:
   - usermod -G docker ${admin_username}
   - systemctl enable docker
-  - systemctl start docker
+  - systemctl enable nginx
+  - systemctl enable incron
+  - systemctl enable uwsgi
   - apt-get update
   - DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y
   - DEBIAN_FRONTEND=noninteractive apt-get autoremove -y

@@ -12,6 +12,11 @@ variable "admin_username" {
   default = "azureuser"
 }
 
+variable "paas_username" {
+  type    = "string"
+  default = "paas"
+}
+
 variable "instance_prefix" {
   default = "paas"
 }

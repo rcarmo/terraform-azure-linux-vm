@@ -75,6 +75,7 @@ data "template_file" "cloud_config" {
   vars {
     ssh_port       = "${var.ssh_port}"
     admin_username = "${var.admin_username}"
+    paas_username  = "${var.paas_username}"
   }
 }
 

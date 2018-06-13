@@ -9,6 +9,10 @@ variable "admin_username" {
   default = "azureuser"
 }
 
+variable "paas_username" {
+  default = "azureuser"
+}
+
 variable "cloud_init" {
   type = "string"
 }

@@ -7,11 +7,13 @@ variable "ssh_key" {
   type = "string"
 }
 
+# This is the primary username used to administer the machine
 variable "admin_username" {
   type    = "string"
   default = "azureuser"
 }
 
+# This is the secondary username used to administer services
 variable "paas_username" {
   type    = "string"
   default = "paas"
@@ -41,12 +43,15 @@ variable "storage_type" {
   default = "Premium_LRS"
 }
 
+variable "cloud_config" {
+  default = "base.yml.tpl"
+}
+
 locals {
   resource_group_name = "${var.shared_prefix}"
 
   tags = {
     environment = "production"
-    serviceType = "compute"
     solution    = "${var.instance_prefix}"
   }
 
@@ -106,6 +111,17 @@ resource "azurerm_availability_set" "machines" {
   tags                = "${local.tags}"
 }
 
+data "template_file" "cloud_config" {
+  template = "${file("${path.module}/cloud-config/${var.cloud_config}")}"
+
+  vars {
+    ssh_port       = "${var.ssh_port}"
+    ssh_key        = "${var.ssh_key}"
+    admin_username = "${var.admin_username}"
+    paas_username  = "${var.paas_username}"
+  }
+}
+
 module "linux" {
   source = "./linux"
 
@@ -125,5 +141,5 @@ module "linux" {
   subnet_id                          = "${azurerm_subnet.default.id}"
   storage_type                       = "${var.storage_type}"
   tags                               = "${local.tags}"
-  cloud_init                         = ""
+  cloud_config                       = "${base64encode(data.template_file.cloud_config.rendered)}"
 }

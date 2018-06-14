@@ -13,7 +13,7 @@ variable "paas_username" {
   default = "azureuser"
 }
 
-variable "cloud_init" {
+variable "cloud_config" {
   type = "string"
 }
 

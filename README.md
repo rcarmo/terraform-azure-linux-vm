@@ -14,7 +14,8 @@ This is the list of currently implemented/planned features:
 * [ ] Metrics agent 2.3/3.0 selection through conditionals
 * [ ] Improve comments
 * [ ] Move NSG outside the `linux` module for flexibility
-* [ ] Move `cloud-config` template outside the `linux` module and into its own folder
+* [x] Split current `cloud-config` into base and "PaaS" versions
+* [x] Move `cloud-config` template outside the `linux` module and into its own folder
 * [x] Set up `docker` and other core packages via `cloud-init`
 * [x] Re-instate public IP, DNS alias and NSGs in `main.tf`
 * [x] Set SSH port and harden configuration via `cloud-init`

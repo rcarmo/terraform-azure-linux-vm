@@ -1,5 +1,5 @@
 resource "azurerm_network_security_group" "inbound" {
-  name                = "${var.name}-inbound"
+  name                = "${var.name}"
   location            = "${var.location}"
   resource_group_name = "${var.resource_group_name}"
 
@@ -69,16 +69,6 @@ resource "azurerm_network_interface" "nic" {
   tags = "${var.tags}"
 }
 
-data "template_file" "cloud_config" {
-  template = "${file("${path.module}/cloud-config.yml.tpl")}"
-
-  vars {
-    ssh_port       = "${var.ssh_port}"
-    admin_username = "${var.admin_username}"
-    paas_username  = "${var.paas_username}"
-  }
-}
-
 resource "azurerm_virtual_machine" "linux" {
   name                  = "${var.name}"
   location              = "${var.location}"
@@ -107,7 +97,7 @@ resource "azurerm_virtual_machine" "linux" {
   os_profile {
     computer_name  = "${var.name}"
     admin_username = "${var.admin_username}"
-    custom_data    = "${base64encode(data.template_file.cloud_config.rendered)}"
+    custom_data    = "${var.cloud_config}"
   }
 
   os_profile_linux_config {

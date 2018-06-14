@@ -55,8 +55,6 @@ write_files:
         index index.html index.htm;
         server_name _;
         location / {
-          # First attempt to serve request as file, then
-          # as directory, then fall back to displaying a 404.
           try_files $uri $uri/ =404;
         }
       }
@@ -65,41 +63,18 @@ write_files:
     permissions: 0644
     content: |
       /home/${paas_username}/.piku/nginx IN_MODIFY,IN_NO_LOOP /bin/systemctl reload nginx
-  - path: /etc/systemd/system/uwsgi.service
-    permissions: 8644
+  - path: /tmp/pubkey
+    permissions: 0644
     content: |
-      [Unit]
-      Description=uWSGI Emperor
-      After=syslog.target
+      ${ssh_key}
 
-      [Service]
-      ExecStart=/usr/bin/uwsgi --ini /home/${paas_username}/.piku/uwsgi/uwsgi.ini
-      User=${paas_username}
-      Group=www-data
-      RuntimeDirectory=uwsgi
-      Restart=always
-      KillSignal=SIGQUIT
-      Type=notify
-      StandardError=syslog
-      NotifyAccess=all
-
-      [Install]
-      WantedBy=multi-user.target
-
-# The Docker official repository does not ship 18.04/bionic packages at this time
-#apt:
-#  sources:
-#    docker_ce.list:
-#      source: "deb https://download.docker.com/linux/ubuntu $RELEASE stable"
-#      keyserver: p80.pool.sks-keyservers.net
-#      keyid: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
 
 packages:
   - audispd-plugins
   - auditd
   - curl
   - docker-compose
-  - docker.io
+  - docker.io # NOTE: The Docker official repository does not ship 18.04/bionic packages at this time
   - fail2ban
   - htop
   - language-pack-en-base
@@ -122,7 +97,7 @@ packages:
   - python3-dev
   - python3-pip  
   - python3-virtualenv 
-  - uwsgi 
+  - uwsgi # TODO: sort out when .ini file needs to be created
   - uwsgi-plugin-asyncio-python3
   - uwsgi-plugin-gevent-python
   - uwsgi-plugin-python
@@ -137,14 +112,20 @@ package_reboot_if_required: true
 timezone: Europe/Lisbon
 
 runcmd:
+  - update-locale LANG=en_US.UTF-8
+  # Get our mini-PaaS
+  - adduser --disabled-password --gecos 'PaaS' --ingroup www-data ${paas_username}
+  - su - ${paas_username} -c "wget https://raw.githubusercontent.com/rcarmo/piku/master/piku.py && python3 ~/piku.py setup && python3 ~/piku.py setup:ssh /tmp/pubkey"
+  # Make uWSGI aware of it
+  - ln /home/${paas_username}/.piku/uwsgi/uwsgi.ini /etc/uwsgi/apps-enabled/piku.ini
+  # Enable and start services
   - usermod -G docker ${admin_username}
-  - systemctl enable docker
+  - usermod -G docker ${paas_username}
   - systemctl enable nginx
   - systemctl enable incron
-  - systemctl enable uwsgi
-  - apt-get update
-  - DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y
-  - DEBIAN_FRONTEND=noninteractive apt-get autoremove -y
-  - reboot
+  - systemctl enable uwsgi # this is mapped to SYS V scripts on 18.04
+  - systemctl start nginx
+  - systemctl start incron
+  - systemctl start uwsgi
 
   # TODO: swap using waagent.conf
